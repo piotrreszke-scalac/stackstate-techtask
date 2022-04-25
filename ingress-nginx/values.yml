@@ -1,0 +1,62 @@
+ingress-nginx:
+  podSecurityPolicy:
+    enabled: true
+
+  controller:
+    image:
+      repository: k8s.gcr.io/ingress-nginx/controller
+      tag: "v1.1.3"
+    watchIngressWithoutClass: true
+    kind: Deployment
+    replicaCount: 2
+    hostNetwork: false
+    priorityClassName: "system-node-critical"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 600Mi
+      requests:
+        cpu: 50m
+        memory: 150Mi
+    extraArgs:
+      enable-ssl-passthrough: ''
+    config:
+      use-forwarded-headers: "true"
+      use-proxy-protocol: "false"
+      set-real-ip-from: "0.0.0.0/0"
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: false
+    admissionWebhooks:
+      enabled: false
+    service:
+      type: LoadBalancer
+      targetPorts:
+        http: http
+        https: http
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+        service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+        service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '4000'
+        service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: "ELBSecurityPolicy-TLS-1-2-2017-01"
+        service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
+        service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:eu-central-1:830835002888:certificate/cfc3b25e-cc79-4650-a7e7-c0cc9a114652
+    livenessProbe:
+      timeoutSeconds: 10
+    readinessProbe:
+      timeoutSeconds: 10
+
+  defaultBackend:
+    replicaCount: 2
+    enabled: true
+    resources:
+      limits:
+        cpu: 100m
+        memory: 20Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    priorityClassName: "system-node-critical"
