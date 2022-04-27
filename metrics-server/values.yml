@@ -1,0 +1,17 @@
+metrics-server:
+  args:
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+    - --kubelet-insecure-tls
+  livenessProbe:
+    timeoutSeconds: 5
+
+  readinessProbe:
+    timeoutSeconds: 5
+
+  resources:
+    requests:
+      cpu: 20m
+      memory: 50Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
