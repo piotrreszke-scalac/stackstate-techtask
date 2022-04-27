@@ -1,0 +1,6 @@
+dependencies:
+- name: prometheus-redis-exporter
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 4.6.0
+digest: sha256:d6d1bf17fb3cce5e4517d7f0cf4cbb0b99cf2780d9825c75daab499a432720e0
+generated: "2022-04-22T13:16:58.186009+02:00"

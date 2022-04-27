@@ -1,0 +1,17 @@
+#! this is to expose management interface of rabbitmq, needed by exporter
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: rabbitmq-http
+  name: rabbitmq-http
+  namespace: sock-shop
+spec:
+  ports:
+  - name: rabbitmq-http
+    port: 80
+    protocol: TCP
+    targetPort: 15672
+  selector:
+    name: rabbitmq
+  type: ClusterIP

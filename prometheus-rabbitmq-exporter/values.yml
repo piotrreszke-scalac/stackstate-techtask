@@ -1,0 +1,12 @@
+prometheus-rabbitmq-exporter:
+  image:
+    tag: 1.0.0-RC13
+  rabbitmq:
+    url: http://rabbitmq-http.sock-shop
+    #url: http://rabbitmq.stackstate.scalac.io
+    capabilities: compat
+  prometheus:
+    monitor:
+      enabled: true
+    rules:
+      enabled: true

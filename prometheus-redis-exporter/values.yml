@@ -1,0 +1,5 @@
+prometheus-redis-exporter:
+  redisAddress:  redis://session-db.sock-shop:6379
+  serviceMonitor:
+    enabled: true
+    namespace: prometheus-redis-exporter

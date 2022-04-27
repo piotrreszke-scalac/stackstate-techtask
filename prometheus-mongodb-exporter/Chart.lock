@@ -1,0 +1,6 @@
+dependencies:
+- name: prometheus-mongodb-exporter
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 2.9.0
+digest: sha256:f0040490f50bc69cafc841153670f786b0d38fab2f744334c5feaff785e838db
+generated: "2022-04-22T13:49:36.541847+02:00"

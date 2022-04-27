@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: sock-shop-http-2xx
+  namespace: prometheus-blackbox-exporter
+spec:
+  module: http_2xx
+  prober:
+    url: prometheus-blackbox-exporter.prometheus-blackbox-exporter.svc:9115
+  targets:
+    staticConfig:
+      labels:
+        environment: sock-shop
+      static:
+      - http://carts.sock-shop.svc
+      - http://catalogue.sock-shop.svc/catalogue
+      - http://front-end.sock-shop.svc
+      - http://orders.sock-shop.svc
+      - http://payment.sock-shop.svc/health
+      - http://queue-master.sock-shop.svc
+      - http://shipping.sock-shop.svc
+      - http://user.sock-shop.svc/customers
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: sock-shop-tcp
+  namespace: prometheus-blackbox-exporter
+spec:
+  module: tcp
+  prober:
+    url: prometheus-blackbox-exporter.prometheus-blackbox-exporter.svc:9115
+  targets:
+    staticConfig:
+      labels:
+        environment: sock-shop
+      static:
+        - carts-db.sock-shop.svc:27017 #mongo
+        - catalogue-db.sock-shop.svc:3306 #mysql
+        - orders-db.sock-shop.svc:27017 #mongo
+        - rabbitmq.sock-shop.svc:5672 #rabbitmq
+        - session-db.sock-shop.svc:6379 #redis
+        - user-db.sock-shop.svc:27017 #mongo

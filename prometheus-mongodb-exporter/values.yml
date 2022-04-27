@@ -1,0 +1,3 @@
+prometheus-mongodb-exporter:
+  mongodb:
+    uri: "mongodb://carts-db.sock-shop:27017"

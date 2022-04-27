@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: blackbox-exporter
+spec:
+  groups:
+  - name: blackbox-exporter
+    rules:
+    - alert: WebsiteIsDown
+      expr: probe_success == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        description: Endpoint is down
