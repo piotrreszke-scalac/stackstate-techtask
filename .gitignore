@@ -1,0 +1,4 @@
+manifest.yml
+**/charts/*
+!**/charts/*.tgz
+.DS_Store
