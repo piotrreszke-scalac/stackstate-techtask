@@ -38,6 +38,14 @@ module "eks" {
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
     }
+    ingress_cluster_all = {
+      description                   = "Control plan to node on all protocols"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
   }
 
   eks_managed_node_groups = {
