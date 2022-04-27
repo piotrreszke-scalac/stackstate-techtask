@@ -1,0 +1,8 @@
+# basic auth credentials for prometheus and alertmanager
+apiVersion: v1
+stringData:
+  auth: admin:$apr1$9d5P2xDf$4P1nhrfGU66PUs8T7yD481
+kind: Secret
+metadata:
+  name: basic-auth
+type: Opaque

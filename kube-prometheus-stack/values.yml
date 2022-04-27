@@ -1,0 +1,169 @@
+kube-prometheus-stack:
+  global:
+    rbac:
+      pspEnabled: true
+
+  kube-state-metrics:
+    image:
+      tag: v2.2.4
+    resources:
+      limits:
+        cpu: 200m
+        memory: 300Mi
+      requests:
+        cpu: 10m
+        memory: 60Mi
+    priorityClassName: "system-cluster-critical"
+    selfMonitor:
+      enabled: true
+    securityContext:
+      runAsNonRoot: true
+
+  prometheus-node-exporter:
+    rbac:
+      pspEnabled: true
+    priorityClassName: "system-node-critical"
+    securityContext:
+      runAsNonRoot: true
+    resources:
+      limits:
+        cpu: 800m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 15Mi
+
+  prometheusOperator:
+    securityContext:
+      runAsNonRoot: true
+    tls:
+      enabled: false
+    admissionWebhooks:
+      enabled: false
+    resources:
+      requests:
+        memory: 50Mi
+        cpu: 0.05
+      limits:
+        memory: 300Mi
+        cpu: 0.3
+
+  defaultRules:
+    rules:
+      kubeApiserver: false # long rules evaluation times
+
+  prometheus:
+    prometheusSpec:
+      securityContext:
+        runAsNonRoot: true
+      resources:
+        requests:
+          memory: '1000Mi'
+          cpu: '500m'
+        limits:
+          memory: '2000Mi'
+          cpu: '2'
+      query:
+        maxSamples: 100000000
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      probeSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
+      retentionSize: 45GB
+      retention: 30d
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 50Gi
+    ingress:
+      hosts:
+        - prometheus.stackstate.scalac.io
+      enabled: true
+      annotations:
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: basic-auth
+
+  alertmanager:
+    alertmanagerSpec:
+      securityContext:
+        runAsNonRoot: true
+      resources:
+        requests:
+          memory: '20Mi'
+          cpu: '0.05'
+        limits:
+          memory: '200Mi'
+          cpu: '0.3'
+      replicas: 2
+      storage:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 1Gi
+    ingress:
+      hosts:
+        - alertmanager.stackstate.scalac.io
+
+    ingress:
+      enabled: true
+      annotations:
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: basic-auth
+
+  grafana:
+    serviceMonitor:
+      enabled: true
+
+    securityContext:
+      runAsNonRoot: true
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+
+    replicas: 1
+    rbac:
+      pspUseAppArmor: false
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    sidecar:
+      resources:
+        limits:
+          cpu: 1
+          memory: 100Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
+
+    ingress:
+      enabled: true
+      hosts:
+        - grafana.stackstate.scalac.io
+      annotations:
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    plugins:
+      - flant-statusmap-panel
+      - digiapulssi-breadcrumb-panel
+      - grafana-polystat-panel
+
+  # not available on eks
+  kubeControllerManager:
+    enabled: false
+
+  kubeScheduler:
+    enabled: false
+
+  kubelet:
+    enabled: true
+    serviceMonitor:
+      https: true

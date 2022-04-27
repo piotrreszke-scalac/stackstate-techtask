@@ -1,0 +1,4 @@
+# this file should be encrypted, but this is outside the scope of this techtask
+kube-prometheus-stack:
+  grafana:
+    adminPassword: stackstate
